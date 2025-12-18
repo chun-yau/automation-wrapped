@@ -3,3 +3,5 @@
 1. Top 5 processes
 1. Most active time (During office hours or outside of office hours)
 1. Longest running process
+1. Number of files processed (Input processes)
+1. Number of form processed (Payments)
