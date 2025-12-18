@@ -5,3 +5,4 @@
 1. Longest running process
 1. Number of files processed (Input processes)
 1. Number of form processed (Payments)
+1. Hours of automation used
