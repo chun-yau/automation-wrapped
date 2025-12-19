@@ -1,1 +1,7 @@
-Test
+Enter your name to see your wrapped for 2025!
+
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="user_name" placeholder="Your Name" required>
+    <button type="submit">Generate My Wrapped 2025</button>
+</form>
