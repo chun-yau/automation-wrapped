@@ -1,6 +1,8 @@
-from django.db.models import Count, DurationField, ExpressionWrapper, F, Sum
+from django.db.models import Count, DurationField, ExpressionWrapper, F, Sum, Q
 from django.shortcuts import render
 from .models import Processes
+
+from datetime import time
 
 
 
@@ -38,6 +40,26 @@ def wrapped(request):
         else:
             processes_queued_ratio = 0
 
+        # Processes started outside of office hours (08:00 - 17:30)
+        outside_office_hours = user_processes.filter(
+            Q(datetime_started__hour__lt = 8) |
+            Q(datetime_started__hour = 17) & Q(datetime_started__minute__gte = 30) |
+            Q(datetime_started__hour__gte = 18)
+        ).count()
+
+        # Processes started inside of office hours (08:00 - 17:30)
+        # Wrote it this way to be explicit and made sure it matches the total count
+        inside_office_hours = user_processes.filter(
+            Q(datetime_started__hour__gte = 8) &
+            Q(datetime_started__hour__lt = 17) |
+            Q(datetime_started__hour = 17) & Q(datetime_started__minute__lt = 30)
+        ).count()
+
+
+
+
+        
+
     else:
         user_name = ''
         count_of_user_processes = 0
@@ -55,5 +77,7 @@ def wrapped(request):
         'total_hours': total_hours,
         'processes_queued_ratio': processes_queued_ratio,
         'processes_queued': processes_queued,
+        'outside_office_hours': outside_office_hours,
+        'inside_office_hours': inside_office_hours,
     }
     return render(request, "wrapped/wrapped.html", context)

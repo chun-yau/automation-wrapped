@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <html lang="en">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <body style="background-color:#6699ff;">
         <h1 style="color:white; text-align:center;">Automation Wrapped 2025</h1>
         <div style="text-align:center; margin-top:50px;">
@@ -27,5 +28,28 @@
 
     <h1>
         You decided to queue {{ processes_queued }} processes this year, that is {{ processes_queued_ratio }}% of your total automated processes!
+    </h1>
+
+    <h1>
+        You started {{ outside_office_hours }} processes outside of office hours this year. Night owl! 🦉
+
+        You started {{ inside_office_hours }} processes during office hours this year. Work hard! 💼
+
+        <canvas id="officeHoursChart"></canvas>
+
+
 </body>
 
+<script>
+const ctx = document.getElementById('officeHoursChart').getContext('2d');
+new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: ['Office Hours', 'Outside Office Hours'],
+        datasets: [{
+            data: [{{ inside_office_hours }}, {{ outside_office_hours }}],
+            backgroundColor: ['#36A2EB', '#FF6384']
+        }]
+    }
+});
+</script>
