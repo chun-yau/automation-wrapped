@@ -1,7 +1,31 @@
-Enter your name to see your wrapped for 2025!
+<!DOCTYPE html>
 
-<form method="post">
-    {% csrf_token %}
-    <input type="text" name="user_name" placeholder="Your Name" required>
-    <button type="submit">Generate My Wrapped 2025</button>
-</form>
+<html lang="en">
+    <body style="background-color:#6699ff;">
+        <h1 style="color:white; text-align:center;">Automation Wrapped 2025</h1>
+        <div style="text-align:center; margin-top:50px;">
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="user_name" placeholder="Your Name" value="{{ user_name }}" required>
+        <button type="submit">Generate My Wrapped 2025</button>
+    </form>
+
+    <h1>
+        {{ count_of_user_processes }} Processes Automated in 2025
+    </h1>
+
+    <h1>Top 5 Automated Processes:</h1>
+    <h2>
+        {% for process in top_processes %}
+            <ul>{{ process.submitted_process }} ({{ process.total }} times){% if not forloop.last %}, {% endif %}</ul>
+        {% endfor %}
+    </h2>
+
+    <h1>
+        Total Automation Time: {{ total_hours }} hours, that's {{ total_days }} days saved!
+    </h1>
+
+    <h1>
+        You decided to queue {{ processes_queued }} processes this year, that is {{ processes_queued_ratio }}% of your total automated processes!
+</body>
+
