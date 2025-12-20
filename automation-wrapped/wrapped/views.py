@@ -35,6 +35,7 @@ def wrapped(request):
     
         # Calculate numhber of processes queued and ratio
         processes_queued = user_processes.filter(datetime_queued__isnull=False).count()
+        processes_not_queued = user_processes.exclude(datetime_queued__isnull=False).count()
         if count_of_user_processes > 0:
             processes_queued_ratio = round((processes_queued / count_of_user_processes) * 100, 2)
         else:
@@ -55,10 +56,14 @@ def wrapped(request):
             Q(datetime_started__hour = 17) & Q(datetime_started__minute__lt = 30)
         ).count()
 
+        # Get their longest 5 processes by duration
+        longest_processes = user_processes.annotate(
+            duration=ExpressionWrapper(
+                F('datetime_ended') - F('datetime_started'),
+                output_field=DurationField()
+            )
+        ).order_by('-duration')[:5]
 
-
-
-        
 
     else:
         user_name = ''
@@ -76,8 +81,10 @@ def wrapped(request):
         'total_days': total_days,
         'total_hours': total_hours,
         'processes_queued_ratio': processes_queued_ratio,
+        'processes_not_queued': processes_not_queued,
         'processes_queued': processes_queued,
         'outside_office_hours': outside_office_hours,
         'inside_office_hours': inside_office_hours,
+        'longest_processes': longest_processes,
     }
     return render(request, "wrapped/wrapped.html", context)

@@ -29,25 +29,51 @@
     <h1>
         You decided to queue {{ processes_queued }} processes this year, that is {{ processes_queued_ratio }}% of your total automated processes!
     </h1>
+    
+    <div style="width: 50%; margin: auto;">
+        <canvas id="queuedChart"></canvas>
+    </div>
+
 
     <h1>
         You started {{ outside_office_hours }} processes outside of office hours this year. Night owl! 🦉
 
         You started {{ inside_office_hours }} processes during office hours this year. Work hard! 💼
 
+    </h1> 
+    
+    <div style="width: 50%; margin: auto;">
         <canvas id="officeHoursChart"></canvas>
+    </div>
+
+    <h1>You had to wait the longest for these processes to finish!</h1>
+    {% for process in longest_processes %}
+        <p>{{ process.submitted_process }} - Duration: {{ process.duration }}</p>
+    {% endfor %}
 
 
 </body>
 
 <script>
-const ctx = document.getElementById('officeHoursChart').getContext('2d');
-new Chart(ctx, {
+const officeHoursCtx = document.getElementById('officeHoursChart').getContext('2d');
+new Chart(officeHoursCtx, {
     type: 'pie',
     data: {
         labels: ['Office Hours', 'Outside Office Hours'],
         datasets: [{
             data: [{{ inside_office_hours }}, {{ outside_office_hours }}],
+            backgroundColor: ['#36A2EB', '#FF6384']
+        }]
+    }
+});
+
+const queuedCtx = document.getElementById('queuedChart').getContext('2d');
+new Chart(queuedCtx, {
+    type: 'pie',
+    data: {
+        labels: ['Queued', 'Not Queued'],
+        datasets: [{
+            data: [{{ processes_queued }}, {{ processes_not_queued }}],
             backgroundColor: ['#36A2EB', '#FF6384']
         }]
     }
