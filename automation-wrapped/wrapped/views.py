@@ -66,12 +66,7 @@ def wrapped(request):
 
 
     else:
-        user_name = ''
-        count_of_user_processes = 0
-        top_processes = []
-        processes_duration = {'total_time': 0}
-        total_days = 0
-        total_hours = 0
+        return render(request, "wrapped/wrapped.html")
         
 
     context = {

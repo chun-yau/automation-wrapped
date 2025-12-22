@@ -1,0 +1,44 @@
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
+</head>
+
+
+
+
+
+
+<div class="carousel-item relative w-full h-screen ...">
+    <div id="slide1" class="carousel-item relative w-full h-screen flex flex-col justify-center items-center bg-gradient-to-br from-purple-600 to-blue-600">
+        <h1 class="text-6xl font-bold text-white">{{ count_of_user_processes }}</h1>
+        <p class="text-2xl text-white mt-4">processes automated</p>
+
+        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+            <a href="#slide1" class="btn btn-circle">X</a> 
+            <a href="#slide2" class="btn btn-circle">❯</a>
+        </div>
+    </div>
+    <div id="slide2" class="carousel-item relative w-full h-screen flex flex-col justify-center items-center bg-gradient-to-br from-purple-600 to-blue-600">
+    <h1 class="text-6xl font-bold text-white">Top 5 Processes:</h1>
+    {% for process in top_processes %}
+        <p class="text-2xl text-white mt-4">{{ process.submitted_process }} ({{ process.total }} times){% if not forloop.last %}, {% endif %}</p>
+    {% endfor %}
+
+        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+            <a href="#slide1" class="btn btn-circle">❮</a> 
+            <a href="#slide3" class="btn btn-circle">❯</a>
+        </div>
+    </div>
+
+
+    <div id="slide3" class="carousel-item relative w-full h-screen flex flex-col justify-center items-center bg-gradient-to-br from-purple-600 to-blue-600">
+    <h1 class="text-6xl font-bold text-white">You've ran processes for {{ total_hours }} hours!</h1>
+    <p class="text-2xl text-white mt-4">That's {{ total_days }} days!!</p>
+    </div>
+    
+    <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+        <a href="#slide2" class="btn btn-circle">❮</a> 
+        <a href="#slide4" class="btn btn-circle">❯</a>
+    </div>
+
+</div>
