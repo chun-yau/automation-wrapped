@@ -10,8 +10,14 @@ def wrapped(request):
 
     if request.method == "POST":
         user_name = request.POST.get('user_name', 'anonymous')
-
         user_processes = Processes.objects.filter(submitted_user = user_name)
+
+        if user_processes.count() == 0:
+            context = {
+                'user_name': user_name,
+                'no_data': True,
+            }
+            return render(request, "wrapped/wrapped.html", context)
 
         count_of_user_processes = user_processes.count()
         top_processes = user_processes.values('submitted_process').annotate(total=Count('id')).order_by('-total')[:5]

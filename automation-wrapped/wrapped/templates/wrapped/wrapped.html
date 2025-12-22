@@ -11,6 +11,7 @@
         <button type="submit">Generate My Wrapped 2025</button>
     </form>
 
+    {% if count_of_user_processes %}
     <h1>
         {{ count_of_user_processes }} Processes Automated in 2025
     </h1>
@@ -46,11 +47,16 @@
         <canvas id="officeHoursChart"></canvas>
     </div>
 
-    <h1>You had to wait the longest for these processes to finish!</h1>
-    {% for process in longest_processes %}
-        <p>{{ process.submitted_process }} - Duration: {{ process.duration }}</p>
-    {% endfor %}
+        <h1>You had to wait the longest for these processes to finish!</h1>
+        {% for process in longest_processes %}
+            <p>{{ process.submitted_process }} - Duration: {{ process.duration }}</p>
+        {% endfor %}
+    {% endif %}
 
+
+    {% if no_data %}
+        <h2 style="color:white;">Thanks for trying Automation Wrapped 2025 {{ user_name }}. Unfortunately we cannot find any automated processes by yourself. Please try another name.</h2>
+    {% endif %}
 
 </body>
 
