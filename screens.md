@@ -6,3 +6,5 @@
 1. Number of files processed (Input processes)
 1. Number of form processed (Payments)
 1. Hours of automation used
+1. Busiest month
+1. You did X percentage of the department's process.
