@@ -80,6 +80,26 @@ def wrapped(request):
             )
         ).order_by('-duration')[:5]
 
+        # User's rank for a specific process
+        specific_process = 'Process_B'
+        all_processes = Processes.objects.filter(submitted_process=specific_process)
+
+        process_b_rankings = all_processes.values('submitted_user').annotate(
+            submitted_count=Count('id')
+        ).order_by('-submitted_count')
+
+        user_rank = None
+        user_count = 0
+
+        for index, entry in enumerate(process_b_rankings):
+            if entry['submitted_user'] == user_name:
+                user_rank = index + 1  # Ranks start at 1
+                user_count = entry['submitted_count']
+                break
+
+        total_process_b = all_processes.count()
+        user_percentage = round((user_count / total_process_b) * 100, 2) if total_process_b > 0 else 0
+
 
     else:
         return render(request, "wrapped/wrapped.html")
@@ -99,5 +119,9 @@ def wrapped(request):
         'longest_processes': longest_processes,
         'office_hours_message': office_hours_message,
         'queued_message': queued_message,
+        'user_rank': user_rank,
+        'user_count': user_count,
+        'user_percentage': user_percentage,
+
     }
     return render(request, "wrapped/wrapped_tailwind_report.html", context)
