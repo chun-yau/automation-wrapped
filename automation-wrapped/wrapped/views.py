@@ -47,6 +47,11 @@ def wrapped(request):
         else:
             processes_queued_ratio = 0
 
+        if processes_queued > processes_not_queued:
+            queued_message = "Great job! You queue most of your processes before starting them. This helps to optimise automation performance."
+        else:
+            queued_message = "You don't queue the majority of your processes but that's not a problem! If you can, consider queuing more processes before starting them to help optimise automation performance."
+
         # Processes started outside of office hours (08:00 - 17:30)
         outside_office_hours = user_processes.filter(
             Q(datetime_started__hour__lt = 8) |
@@ -61,6 +66,11 @@ def wrapped(request):
             Q(datetime_started__hour__lt = 17) |
             Q(datetime_started__hour = 17) & Q(datetime_started__minute__lt = 30)
         ).count()
+
+        if outside_office_hours > inside_office_hours:
+            office_hours_message = "You run processes more often outside of office hours. Great job on maximising automation!"
+        else:
+            office_hours_message = "You run processes more often inside of office hours. Consider scheduling more outside of office hours to maximise automation!"
 
         # Get their longest 5 processes by duration
         longest_processes = user_processes.annotate(
@@ -87,5 +97,7 @@ def wrapped(request):
         'outside_office_hours': outside_office_hours,
         'inside_office_hours': inside_office_hours,
         'longest_processes': longest_processes,
+        'office_hours_message': office_hours_message,
+        'queued_message': queued_message,
     }
-    return render(request, "wrapped/wrapped.html", context)
+    return render(request, "wrapped/wrapped_tailwind_report.html", context)

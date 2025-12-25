@@ -1,0 +1,105 @@
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>2025 Wrapped for {{ user_name }}</title>
+</head>
+
+
+
+
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 p-4">
+    <div class="card w-full max-w-5xl bg-white shadow-2xl">
+        <div class="card-body">
+            <h2 class="card-title text-4xl text-center mb-8">2025 Wrapped for {{ user_name }}</h2>
+            
+            <!-- Quick stats -->
+            <div class="stats stats-vertical lg:stats-horizontal shadow w-full">
+                <div class="stats shadow">
+                    <div class="stat">
+                        <div class="stat-title">Processes automated in 2025</div>
+                        <div class="stat-value">{{ count_of_user_processes }}</div>
+                    </div>
+                        <div class="stat">
+                            <div class="stat-title">The combined running time for all your processes was:</div>
+                            <div class="stat-value">{{ total_hours }} hours!</div>
+                            <div class="stat-desc">That's {{ total_days }} days!!</div>
+                        </div>
+                </div>
+            </div>
+            
+            <!-- Charts -->
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                <div style="text-cente" class=>
+                    <canvas id="officeHoursChart"></canvas>
+                        <h3 class="card-title mt-4">Office Hours</h3>
+                        <p>{{ office_hours_message }}</p>
+                </div>
+
+                <div style="text-center">
+                    <canvas id="queuedChart"></canvas>
+                        <h3 class="card-title mt-4">Queued Processes</h3>
+                        <p>{{ queued_message }}</p>
+                </div>
+
+     
+            </div>  
+
+<div class="divider mt-8"></div> 
+
+<h3 class="text-3xl font-bold text-center mb-6">Your Top Processes</h3>
+
+                <div class="stats stats-vertical shadow text-center">
+                    {% for process in top_processes %}
+                    <div class="stat">
+                        <div class="stat-title">{{ process.submitted_process }}</div>
+                        <div class="stat-value text-2xl">{{ process.total }}</div>
+                    </div>
+                    {% endfor %}
+</div>    
+
+<div class="divider mt-8"></div> 
+
+<h3 class="text-3xl font-bold text-center mb-6">Your Longest Processes</h3>
+
+
+
+                <div class="stats stats-vertical shadow text-center">
+                    {% for process in longest_processes %}
+                    <div class="stat">
+                        <div class="stat-title">{{ process.submitted_process }}</div>
+                        <div class="stat-value text-2xl">{{ process.duration }}</div>
+                    </div>
+                    {% endfor %}
+</div>    
+
+            
+    </div>
+</div>
+
+
+<script>
+const officeHoursCtx = document.getElementById('officeHoursChart').getContext('2d');
+new Chart(officeHoursCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Office Hours', 'Outside Office Hours'],
+        datasets: [{
+            data: [{{ inside_office_hours }}, {{ outside_office_hours }}],
+            backgroundColor: ['#36A2EB', '#FF6384']
+        }]
+    }
+});
+
+const queuedCtx = document.getElementById('queuedChart').getContext('2d');
+new Chart(queuedCtx, {
+    type: 'pie',
+    data: {
+        labels: ['Queued', 'Not Queued'],
+        datasets: [{
+            data: [{{ processes_queued }}, {{ processes_not_queued }}],
+            backgroundColor: ['#36A2EB', '#FF6384']
+        }]
+    }
+});
+</script>
