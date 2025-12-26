@@ -7,18 +7,6 @@
     <title>2025 Wrapped for {{ user_name }}</title>
 </head>
 
-        'user_rank': {{ user_rank  }}
-        'user_count': {{ user_count }},
-        'user_percentage': {{ user_percentage }},
-
-        <div class="alert alert-success mt-4">
-    <div>
-        <h3 class="font-bold">🌟 Special Achievement!</h3>
-        <p>You ranked #{{ user_rank }} for {{ special_process }}!</p>
-        <p>You submitted {{ user_percentage }}% of all {{ special_process }} runs!</p>
-    </div>
-</div>
-
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 p-4">
     <div class="card w-full max-w-5xl bg-white shadow-2xl">
         <div class="card-body">
@@ -54,28 +42,57 @@
                 </div>
 
      
-            </div>  
-
+            </div> 
             
+
 
 <div class="divider mt-8"></div> 
 
 <h3 class="text-3xl font-bold text-center mb-6">Your Top Processes</h3>
 
-                <div class="stats stats-vertical shadow text-center">
+                <div class="space-y-3">
                     {% for process in top_processes %}
-                    <div class="stat">
-                        <div class="stat-title">{{ process.submitted_process }}</div>
-                        <div class="stat-value text-2xl">{{ process.total }}</div>
+                    <div class="card bg-base-200 shadow-md">
+                        <div class="card-body p-4">
+                            <div class="flex gap-4 items-center">
+                                <!-- Large ranking number -->
+                                <div class="text-5xl font-bold text-primary min-w-[80px] text-center
+                                    {% if forloop.counter == 1 %}text-yellow-500
+                                    {% elif forloop.counter == 2 %}text-gray-400
+                                    {% elif forloop.counter == 3 %}text-orange-600
+                                    {% else %}text-primary{% endif %}">
+                                    {{ forloop.counter|ordinal }}
+                                </div>
+                                
+                                <!-- Bar and details -->
+                                <div class="flex-1">
+                                    <div class="flex justify-between mb-1">
+                                        <span class="font-semibold">{{ process.submitted_process }}</span>
+                                        <span class="text-primary font-bold">{{ process.total }}</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-4">
+                                        <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-4 rounded-full" 
+                                             style="width: {% widthratio process.total top_processes.0.total 100 %}%">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     {% endfor %}
-</div>    
+                </div>
+
+
 
         <div class="alert alert-success mt-4">
     <div>
         <h3 class="font-bold">Did you know..?</h3>
-        <p>You submitted Process B {{ user_count }} times!</p>
-        <p>That makes you {{ user_rank|ordinal }} in the rankings and means you've contributed {{ user_percentage }}% of all Process B runs!</p>
+<p>
+  You ran <strong>Process B</strong> {{ user_count }} time{{ user_count|pluralize }} this year
+</p>
+<p>
+  You ranked {{ user_rank|ordinal }} overall and completed {{ user_percentage }}% of all <strong>Process B</strong> runs
+</p>
     </div>
 </div>
 
