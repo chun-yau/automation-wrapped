@@ -7,10 +7,11 @@
     <title>2025 Wrapped for {{ user_name }}</title>
 </head>
 
+
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 p-4">
-    <div class="card w-full max-w-5xl bg-white shadow-2xl">
+    <div class="card w-full max-w-6xl bg-white shadow-2xl">
         <div class="card-body">
-            <h2 class="card-title text-4xl text-center mb-8">2025 Wrapped for {{ user_name }}</h2>
+            <h2 class="card-title text-2xl text-center mb-8">2025 Wrapped for {{ user_name }}</h2>
             
             <!-- Quick stats -->
             <div class="stats stats-vertical lg:stats-horizontal shadow w-full">
@@ -82,19 +83,28 @@
                     {% endfor %}
                 </div>
 
+                        <div class="alert alert-warning mt-4">
+            <div>
+                <strong>{{ user_top_process }}</strong> topped your list with {{ top_process_user_count }} run{{ top_process_user_count|pluralize }}. That’s {{ top_process_user_percentage }}% of all department usage, placing you {{ top_process_user_rank|ordinal }} overall.
+                </p>
+            </div>
+        </div>
+
+
 
 
         <div class="alert alert-success mt-4">
-    <div>
-        <h3 class="font-bold">Did you know..?</h3>
-<p>
-  You ran <strong>Process B</strong> {{ user_count }} time{{ user_count|pluralize }} this year
-</p>
-<p>
-  You ranked {{ user_rank|ordinal }} overall and completed {{ user_percentage }}% of all <strong>Process B</strong> runs
-</p>
-    </div>
-</div>
+            <div>
+                <h3 class="font-bold">Did you know..?</h3>
+                <p>
+                You ran <strong>Process B</strong> {{ user_count }} time{{ user_count|pluralize }} this year
+                </p>
+                <p>
+                You ranked {{ user_rank|ordinal }} overall and completed {{ user_percentage }}% of all <strong>Process B</strong> runs
+                </p>
+            </div>
+        </div>
+
 
 <div class="divider mt-8"></div> 
 

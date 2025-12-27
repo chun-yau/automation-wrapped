@@ -100,7 +100,23 @@ def wrapped(request):
         total_process_b = all_processes.count()
         user_percentage = round((user_count / total_process_b) * 100, 2) if total_process_b > 0 else 0
 
+        # User's rank for their top process
+        user_top_process = top_processes.first()['submitted_process']
 
+        all_user_top_processes = Processes.objects.filter(submitted_process = user_top_process)
+        top_process_user_count = all_user_top_processes.filter(submitted_user = user_name).count()
+        top_process_user_percentage = round((top_process_user_count / all_user_top_processes.count()) * 100, 2) if all_user_top_processes.count() > 0 else 0
+        top_process_rankings = all_user_top_processes.values('submitted_user').annotate(
+            submitted_count=Count('id')
+        ).order_by('-submitted_count')
+
+        top_process_user_rank = None
+        
+        for index, entry in enumerate(top_process_rankings):
+            if entry['submitted_user'] == user_name:
+                top_process_user_rank = index + 1  # Ranks start at 1
+                break
+        
     else:
         return render(request, "wrapped/wrapped.html")
         
@@ -122,6 +138,10 @@ def wrapped(request):
         'user_rank': user_rank,
         'user_count': user_count,
         'user_percentage': user_percentage,
+        'top_process_user_rank': top_process_user_rank,
+        'user_top_process': user_top_process,
+        'top_process_user_percentage': top_process_user_percentage,
+        'top_process_user_count': top_process_user_count,
 
     }
     return render(request, "wrapped/wrapped_tailwind_report.html", context)
