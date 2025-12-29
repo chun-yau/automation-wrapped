@@ -115,7 +115,7 @@
                 <div class="stats stats-vertical shadow text-center">
                     {% for process in longest_processes %}
                     <div class="stat">
-                        <div class="stat-title">{{ process.submitted_process }}</div>
+                        <div class="stat-title">{{ process.customer}} - {{ process.submitted_process }}</div>
                         <div class="stat-value text-2xl">{{ process.duration }}</div>
                     </div>
                     {% endfor %}
