@@ -23,4 +23,4 @@ class Processes(models.Model):
     submitted_process = models.CharField(max_length=100, choices=PROCESSES)
     process_type = models.CharField(max_length=100, choices=PROCESSES_TYPE)
     datetime_queued = models.DateTimeField(null=True, blank=True)
-
+    customer = models.CharField(max_length=255, null=True, blank=True)
