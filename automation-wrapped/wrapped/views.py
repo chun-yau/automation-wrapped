@@ -10,8 +10,14 @@ def wrapped(request):
 
     if request.method == "POST":
         user_name = request.POST.get('user_name', 'anonymous')
-
         user_processes = Processes.objects.filter(submitted_user = user_name)
+
+        if user_processes.count() == 0:
+            context = {
+                'user_name': user_name,
+                'no_data': True,
+            }
+            return render(request, "wrapped/wrapped.html", context)
 
         count_of_user_processes = user_processes.count()
         top_processes = user_processes.values('submitted_process').annotate(total=Count('id')).order_by('-total')[:5]
@@ -41,6 +47,11 @@ def wrapped(request):
         else:
             processes_queued_ratio = 0
 
+        if processes_queued > processes_not_queued:
+            queued_message = "Great job! You queue most of your processes before starting them. This helps to optimise automation performance."
+        else:
+            queued_message = "You don't queue the majority of your processes but that's not a problem! If you can, consider queuing more processes before starting them to help optimise automation performance."
+
         # Processes started outside of office hours (08:00 - 17:30)
         outside_office_hours = user_processes.filter(
             Q(datetime_started__hour__lt = 8) |
@@ -56,6 +67,11 @@ def wrapped(request):
             Q(datetime_started__hour = 17) & Q(datetime_started__minute__lt = 30)
         ).count()
 
+        if outside_office_hours > inside_office_hours:
+            office_hours_message = "You run processes more often outside of office hours. Great job on maximising automation!"
+        else:
+            office_hours_message = "You run processes more often inside of office hours. Consider scheduling more outside of office hours to maximise automation!"
+
         # Get their longest 5 processes by duration
         longest_processes = user_processes.annotate(
             duration=ExpressionWrapper(
@@ -64,14 +80,45 @@ def wrapped(request):
             )
         ).order_by('-duration')[:5]
 
+        # User's rank for a specific process
+        specific_process = 'Process_B'
+        all_processes = Processes.objects.filter(submitted_process=specific_process)
 
+        process_b_rankings = all_processes.values('submitted_user').annotate(
+            submitted_count=Count('id')
+        ).order_by('-submitted_count')
+
+        user_rank = None
+        user_count = 0
+
+        for index, entry in enumerate(process_b_rankings):
+            if entry['submitted_user'] == user_name:
+                user_rank = index + 1  # Ranks start at 1
+                user_count = entry['submitted_count']
+                break
+
+        total_process_b = all_processes.count()
+        user_percentage = round((user_count / total_process_b) * 100, 2) if total_process_b > 0 else 0
+
+        # User's rank for their top process
+        user_top_process = top_processes.first()['submitted_process']
+
+        all_user_top_processes = Processes.objects.filter(submitted_process = user_top_process)
+        top_process_user_count = all_user_top_processes.filter(submitted_user = user_name).count()
+        top_process_user_percentage = round((top_process_user_count / all_user_top_processes.count()) * 100, 2) if all_user_top_processes.count() > 0 else 0
+        top_process_rankings = all_user_top_processes.values('submitted_user').annotate(
+            submitted_count=Count('id')
+        ).order_by('-submitted_count')
+
+        top_process_user_rank = None
+        
+        for index, entry in enumerate(top_process_rankings):
+            if entry['submitted_user'] == user_name:
+                top_process_user_rank = index + 1  # Ranks start at 1
+                break
+        
     else:
-        user_name = ''
-        count_of_user_processes = 0
-        top_processes = []
-        processes_duration = {'total_time': 0}
-        total_days = 0
-        total_hours = 0
+        return render(request, "wrapped/wrapped.html")
         
 
     context = {
@@ -86,5 +133,15 @@ def wrapped(request):
         'outside_office_hours': outside_office_hours,
         'inside_office_hours': inside_office_hours,
         'longest_processes': longest_processes,
+        'office_hours_message': office_hours_message,
+        'queued_message': queued_message,
+        'user_rank': user_rank,
+        'user_count': user_count,
+        'user_percentage': user_percentage,
+        'top_process_user_rank': top_process_user_rank,
+        'user_top_process': user_top_process,
+        'top_process_user_percentage': top_process_user_percentage,
+        'top_process_user_count': top_process_user_count,
+
     }
-    return render(request, "wrapped/wrapped.html", context)
+    return render(request, "wrapped/wrapped_tailwind_report.html", context)

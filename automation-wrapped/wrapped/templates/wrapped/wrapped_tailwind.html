@@ -1,0 +1,35 @@
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
+</head>
+
+<div class="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-purple-600 to-blue-600 text-white">
+    <h1 class="text-6xl font-bold">{{ count_of_user_processes }}</h1>
+    <p class="text-2xl mt-4">processes automated</p>
+</div>
+
+
+<div class="min-h-screen flex items-center justify-center bg-base-200">
+    <div class="card w-96 bg-base-100 shadow-xl">
+        <div class="card-body items-center text-center">
+            <h2 class="card-title text-6xl">{{ total_days }}</h2>
+            <p>days saved in 2025</p>
+        </div>
+    </div>
+</div>
+
+<div class="min-h-screen flex items-center justify-center bg-base-200">
+    <div class="card w-96 bg-base-100 shadow-xl">
+        <div class="card-body items-center text-center">
+            <h2 class="card-title text-6xl">{{ total_days }}</h2>
+            <p>days saved in 2025</p>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
+    <div class="stat bg-base-100 shadow">
+        <div class="stat-value">{{ count }}</div>
+        <div class="stat-title">Processes</div>
+    </div>
+</div>

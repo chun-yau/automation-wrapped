@@ -21,8 +21,15 @@ class Command(BaseCommand):
                       'Davis', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 
                       'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin']
         
+        # List of customers
+        customers = ['Customer_X', 'Customer_Y', 'Customer_Z', 'Customer_W', 'Customer_V', 'Customer_U', 'Customer_T', 'Customer_S', 'Customer_R', 'Customer_Q']
+        
         # Create 20 unique full names
         users = [f'{first} {last}' for first, last in zip(first_names, last_names)]
+
+        user_primary_customers = {}
+        for user in users:
+            user_primary_customers[user] = random.choice(customers)
         
         # Get process choices from the model
         process_choices = [choice[0] for choice in Processes.PROCESSES]
@@ -50,6 +57,12 @@ class Command(BaseCommand):
             submitted_user = random.choice(users)
             submitted_process = random.choice(process_choices)
             process_type = random.choice(process_type_choices)
+
+            # Assign primary customer to 80% of processes
+            if random.random() < 0.8:
+                customer = user_primary_customers[submitted_user]
+            else:
+                customer = random.choice(customers)
             
             # 15% chance to have a queued datetime (5-60 minutes before started)
             datetime_queued = None
@@ -64,7 +77,8 @@ class Command(BaseCommand):
                 submitted_user=submitted_user,
                 submitted_process=submitted_process,
                 process_type=process_type,
-                datetime_queued=datetime_queued
+                datetime_queued=datetime_queued,
+                customer=customer
             )
             processes_to_create.append(process)
         
