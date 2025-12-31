@@ -7,65 +7,94 @@
     <title>2025 Wrapped for {{ user_name }}</title>
 </head>
 
-
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 p-4">
-    <div class="card w-full max-w-6xl bg-white shadow-2xl">
-        <div class="card-body">
-            <h2 class="card-title text-2xl text-center mb-8">2025 Wrapped for {{ user_name }}</h2>
-            
-            <!-- Quick stats -->
-            <div class="stats stats-vertical lg:stats-horizontal shadow w-full">
-                <div class="stats shadow">
+<body>
+    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 p-4">
+        <div class="card w-full max-w-6xl bg-white shadow-2xl">
+            <div class="card-body">
+                <h2 class="card-title text-2xl text-center mb-8">2025 Wrapped for {{ user_name }}</h2>
+                
+                <!-- Quick stats -->
+                <div class="stats stats-vertical lg:stats-horizontal shadow w-full">
                     <div class="stat">
                         <div class="stat-title">Processes automated in 2025</div>
                         <div class="stat-value">{{ count_of_user_processes }}</div>
                     </div>
-                        <div class="stat">
-                            <div class="stat-title">The combined running time for all your processes was:</div>
-                            <div class="stat-value">{{ total_hours }} hours!</div>
-                            <div class="stat-desc">That's {{ total_days }} days!!</div>
-                        </div>
+                    <div class="stat">
+                        <div class="stat-title">The combined running time for all your processes was:</div>
+                        <div class="stat-value">{{ total_hours }} hours!</div>
+                        <div class="stat-desc">That's {{ total_days }} days!!</div>
+                    </div>
                 </div>
-            </div>
-            
-            <!-- Charts -->
-            <div class="grid grid-cols-2 gap-4 mt-4">
-                <div style="text-cente" class=>
-                    <canvas id="officeHoursChart"></canvas>
+                
+                <!-- Charts -->
+                <div class="grid grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <canvas id="officeHoursChart"></canvas>
                         <h3 class="card-title mt-4">Office Hours</h3>
                         <p>{{ office_hours_message }}</p>
-                </div>
-
-                <div style="text-center">
-                    <canvas id="queuedChart"></canvas>
+                    </div>
+                    <div>
+                        <canvas id="queuedChart"></canvas>
                         <h3 class="card-title mt-4">Queued Processes</h3>
                         <p>{{ queued_message }}</p>
-                </div>
+                    </div>
+                </div> 
 
-     
-            </div> 
-            
-
-
-<div class="divider mt-8"></div> 
-
-<h3 class="text-3xl font-bold text-center mb-6">Your Top Processes</h3>
-
+                <div class="divider mt-8"></div> 
+                
+                <!-- Top Customers -->
+                <h3 class="text-3xl font-bold text-center mb-6">Your Top Customers</h3>
                 <div class="space-y-3">
-                    {% for process in top_processes %}
+                    {% for customer in top_customers %}
                     <div class="card bg-base-200 shadow-md">
                         <div class="card-body p-4">
                             <div class="flex gap-4 items-center">
-                                <!-- Large ranking number -->
-                                <div class="text-5xl font-bold text-primary min-w-[80px] text-center
+                                <div class="text-5xl font-bold min-w-[80px] text-center
                                     {% if forloop.counter == 1 %}text-yellow-500
                                     {% elif forloop.counter == 2 %}text-gray-400
                                     {% elif forloop.counter == 3 %}text-orange-600
                                     {% else %}text-primary{% endif %}">
                                     {{ forloop.counter|ordinal }}
                                 </div>
-                                
-                                <!-- Bar and details -->
+                                <div class="flex-1">
+                                    <div class="flex justify-between mb-1">
+                                        <span class="font-semibold">{{ customer.customer }}</span>
+                                        <span class="text-primary font-bold">{{ customer.customer_count }}</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-4">
+                                        <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-4 rounded-full" 
+                                             style="width: {% widthratio customer.customer_count top_customers.0.customer_count 100 %}%">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="alert alert-info mt-4">
+                    <div>
+                        <strong>{{ user_top_customer }}</strong> is your top customer this year with {{ user_top_customer_count }} run{{ user_top_customer_count|pluralize }}. That's {{ user_top_customer_percentage }}% of all your processes!
+                    </div>
+                </div>
+
+                <div class="divider mt-8"></div> 
+
+                <!-- Top Processes -->
+                <h3 class="text-3xl font-bold text-center mb-6">Your Top Processes</h3>
+                <div class="space-y-3">
+                    {% for process in top_processes %}
+                    <div class="card bg-base-200 shadow-md">
+                        <div class="card-body p-4">
+                            <div class="flex gap-4 items-center">
+                                <div class="text-5xl font-bold min-w-[80px] text-center
+                                    {% if forloop.counter == 1 %}text-yellow-500
+                                    {% elif forloop.counter == 2 %}text-gray-400
+                                    {% elif forloop.counter == 3 %}text-orange-600
+                                    {% else %}text-primary{% endif %}">
+                                    {{ forloop.counter|ordinal }}
+                                </div>
                                 <div class="flex-1">
                                     <div class="flex justify-between mb-1">
                                         <span class="font-semibold">{{ process.submitted_process }}</span>
@@ -83,71 +112,134 @@
                     {% endfor %}
                 </div>
 
-                        <div class="alert alert-warning mt-4">
-            <div>
-                <strong>{{ user_top_process }}</strong> topped your list with {{ top_process_user_count }} run{{ top_process_user_count|pluralize }}. That’s {{ top_process_user_percentage }}% of all department usage, placing you {{ top_process_user_rank|ordinal }} overall.
-                </p>
-            </div>
-        </div>
-
-
-
-
-        <div class="alert alert-success mt-4">
-            <div>
-                <h3 class="font-bold">Did you know..?</h3>
-                <p>
-                You ran <strong>Process B</strong> {{ user_count }} time{{ user_count|pluralize }} this year
-                </p>
-                <p>
-                You ranked {{ user_rank|ordinal }} overall and completed {{ user_percentage }}% of all <strong>Process B</strong> runs
-                </p>
-            </div>
-        </div>
-
-
-<div class="divider mt-8"></div> 
-
-<h3 class="text-3xl font-bold text-center mb-6">Your Longest Processes</h3>
-
-
-
-                <div class="stats stats-vertical shadow text-center">
-                    {% for process in longest_processes %}
-                    <div class="stat">
-                        <div class="stat-title">{{ process.customer}} - {{ process.submitted_process }}</div>
-                        <div class="stat-value text-2xl">{{ process.duration }}</div>
+                <div class="alert alert-warning mt-4">
+                    <div>
+                        <strong>{{ user_top_process }}</strong> topped your list with {{ top_process_user_count }} run{{ top_process_user_count|pluralize }}. That's {{ top_process_user_percentage }}% of all department usage, placing you {{ top_process_user_rank|ordinal }} overall.
                     </div>
-                    {% endfor %}
-</div>    
+                </div>
 
-            
+                <div class="alert alert-success mt-4">
+                    <div>
+                        <h3 class="font-bold">Did you know..?</h3>
+                        <p>You ran <strong>Process B</strong> {{ user_count }} time{{ user_count|pluralize }} this year</p>
+                        <p>You ranked {{ user_rank|ordinal }} overall and completed {{ user_percentage }}% of all <strong>Process B</strong> runs</p>
+                    </div>
+                </div>
+
+                <div class="divider mt-8"></div> 
+
+                <!-- Longest Processes Chart -->
+                <h3 class="text-3xl font-bold text-center mb-6">Your Longest Processes</h3>
+                <div class="mt-4 bg-gradient-to-br from-purple-50 to-indigo-50 p-6 rounded-lg" style="height: 500px;">
+                    <canvas id="longestProcessesChart"></canvas>
+                </div>
+
+                <div class="divider mt-8"></div> 
+            </div>
+        </div>
     </div>
-</div>
 
+    <script>
+        const officeHoursCtx = document.getElementById('officeHoursChart').getContext('2d');
+        new Chart(officeHoursCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Office Hours', 'Outside Office Hours'],
+                datasets: [{
+                    data: [{{ inside_office_hours }}, {{ outside_office_hours }}],
+                    backgroundColor: ['#36A2EB', '#FF6384']
+                }]
+            }
+        });
 
-<script>
-const officeHoursCtx = document.getElementById('officeHoursChart').getContext('2d');
-new Chart(officeHoursCtx, {
-    type: 'doughnut',
-    data: {
-        labels: ['Office Hours', 'Outside Office Hours'],
-        datasets: [{
-            data: [{{ inside_office_hours }}, {{ outside_office_hours }}],
-            backgroundColor: ['#36A2EB', '#FF6384']
-        }]
-    }
-});
+        const queuedCtx = document.getElementById('queuedChart').getContext('2d');
+        new Chart(queuedCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Queued', 'Not Queued'],
+                datasets: [{
+                    data: [{{ processes_queued }}, {{ processes_not_queued }}],
+                    backgroundColor: ['#36A2EB', '#FF6384']
+                }]
+            }
+        });
 
-const queuedCtx = document.getElementById('queuedChart').getContext('2d');
-new Chart(queuedCtx, {
-    type: 'pie',
-    data: {
-        labels: ['Queued', 'Not Queued'],
-        datasets: [{
-            data: [{{ processes_queued }}, {{ processes_not_queued }}],
-            backgroundColor: ['#36A2EB', '#FF6384']
-        }]
-    }
-});
-</script>
+        const longestProcessesCtx = document.getElementById('longestProcessesChart').getContext('2d');
+        new Chart(longestProcessesCtx, {
+            type: 'bar',
+            data: {
+                labels: [
+                    {% for process in longest_processes_data %}
+                        '{{ process.label }}'{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                ],
+                datasets: [{
+                    label: 'Duration (minutes)',
+                    data: [
+                        {% for process in longest_processes_data %}
+                            {{ process.minutes }}{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                    ],
+                    backgroundColor: [
+                        'rgba(255, 215, 0, 0.8)',
+                        'rgba(192, 192, 192, 0.8)', 
+                        'rgba(205, 127, 50, 0.8)',
+                        'rgba(102, 126, 234, 0.8)',
+                        'rgba(118, 75, 162, 0.8)'
+                    ],
+                    borderColor: [
+                        '#FFD700',
+                        '#C0C0C0', 
+                        '#CD7F32',
+                        '#667eea',
+                        '#764ba2'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const minutes = context.parsed.x;
+                                const hours = Math.floor(minutes / 60);
+                                const mins = Math.round(minutes % 60);
+                                return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Duration'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                const hours = Math.floor(value / 60);
+                                const mins = Math.round(value % 60);
+                                return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(102, 126, 234, 0.1)'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
