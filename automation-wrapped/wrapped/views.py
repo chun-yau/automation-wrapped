@@ -73,12 +73,24 @@ def wrapped(request):
             office_hours_message = "You run processes more often inside of office hours. Consider scheduling more outside of office hours to maximise automation!"
 
         # Get their longest 5 processes by duration
-        longest_processes = user_processes.annotate(
+        processes_duration = user_processes.annotate(
             duration=ExpressionWrapper(
                 F('datetime_ended') - F('datetime_started'),
                 output_field=DurationField()
             )
-        ).order_by('-duration')[:5]
+        )
+        longest_processes = processes_duration.order_by('-duration')[:5]
+
+
+        # Convert durations to minutes for chart
+        longest_processes_data = []
+        for process in longest_processes:
+            minutes = process.duration.total_seconds() / 60
+            longest_processes_data.append({
+                'label': f"{process.customer} - {process.submitted_process}",
+                'minutes': round(minutes, 1),
+                'duration': process.duration
+            })
 
         # User's rank for a specific process
         specific_process = 'Process_B'
@@ -116,6 +128,15 @@ def wrapped(request):
             if entry['submitted_user'] == user_name:
                 top_process_user_rank = index + 1  # Ranks start at 1
                 break
+
+        # Top customers for the user
+        top_customers = user_processes.values('customer').annotate(customer_count = Count('id')).order_by('-customer_count')[:10]
+
+        user_top_customer = top_customers.first()['customer']
+        user_top_customer_count = top_customers.first()['customer_count']
+
+        user_top_customer_percentage = round((user_top_customer_count / count_of_user_processes) * 100, 2) if count_of_user_processes > 0 else 0
+
         
     else:
         return render(request, "wrapped/wrapped.html")
@@ -133,6 +154,7 @@ def wrapped(request):
         'outside_office_hours': outside_office_hours,
         'inside_office_hours': inside_office_hours,
         'longest_processes': longest_processes,
+        'longest_processes_data': longest_processes_data,
         'office_hours_message': office_hours_message,
         'queued_message': queued_message,
         'user_rank': user_rank,
@@ -142,6 +164,10 @@ def wrapped(request):
         'user_top_process': user_top_process,
         'top_process_user_percentage': top_process_user_percentage,
         'top_process_user_count': top_process_user_count,
+        'top_customers': top_customers,
+        'user_top_customer': user_top_customer,
+        'user_top_customer_count': user_top_customer_count,
+        'user_top_customer_percentage': user_top_customer_percentage,
 
     }
     return render(request, "wrapped/wrapped_tailwind_report.html", context)
